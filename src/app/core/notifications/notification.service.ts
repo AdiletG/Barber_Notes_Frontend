@@ -1,47 +1,45 @@
-import {Injectable} from '@angular/core';
-import {MessageService} from 'primeng/api';
+import { Injectable, inject } from '@angular/core';
+import { MessageService } from 'primeng/api';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
 export class NotificationService {
+  private readonly messageService = inject(MessageService);
 
-  constructor(private readonly messageService: MessageService) {}
-
-  success(message: string): void{
+  success(message: string): void {
     this.messageService.add({
-      severity: "success",
-      summary: "Успешно",
+      severity: 'success',
+      summary: 'Успешно',
       detail: message,
-      life: 3000,
+      life: 5000,
     });
   }
 
-  error(message: string): void{
+  error(message: string): void {
     this.messageService.add({
-      severity: "error",
-      summary: "Ошибка",
+      severity: 'error',
+      summary: 'Ошибка',
       detail: message,
-      life: 3000,
+      life: 5000,
     });
   }
 
-  info(message: string): void{
+  info(message: string): void {
     this.messageService.add({
-      severity: "info",
-      summary: "Информация",
+      severity: 'info',
+      summary: 'Информация',
       detail: message,
-      life: 3000,
+      life: 5000,
     });
   }
 
-  warning(message: string): void{
+  warning(message: string): void {
     this.messageService.add({
-      severity: "warning",
-      summary: "Внимание",
+      severity: 'warning',
+      summary: 'Внимание',
       detail: message,
-      life: 3000,
+      life: 5000,
     });
   }
 }

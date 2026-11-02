@@ -1,5 +1,5 @@
 export interface AppError {
-  code: number;
+  status: number;
   error: string;
   message: string;
   path?: string;

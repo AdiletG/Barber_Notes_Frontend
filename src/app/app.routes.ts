@@ -1,8 +1,9 @@
 import { Routes } from '@angular/router';
-import {Home} from './features/home/home'
-import {DevCheck} from './features/dev-check/dev-check';
 
 export const routes: Routes = [
-  {path: "", loadComponent: () => Home},
-  {path: "dev-check", loadComponent: () => DevCheck},
+  { path: '', loadComponent: () => import('./features/home/home').then((m) => m.Home) },
+  {
+    path: 'dev-check',
+    loadComponent: () => import('./features/dev-check/dev-check').then((m) => m.DevCheck),
+  },
 ];
