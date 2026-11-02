@@ -7,7 +7,7 @@ describe('NotificationService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [MessageService]
+      providers: [MessageService],
     });
     service = TestBed.inject(NotificationService);
   });
