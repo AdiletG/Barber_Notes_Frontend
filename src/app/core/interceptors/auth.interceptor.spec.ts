@@ -1,22 +1,17 @@
 import { TestBed } from '@angular/core/testing';
-import {
-  HttpTestingController,
-  provideHttpClientTesting
-} from '@angular/common/http/testing';
-import {
-  HttpClient,
-  provideHttpClient,
-  withInterceptors
-} from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 
+import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
+
+import { TokenStoreService } from '../auth/token-store.service';
 import { authInterceptor } from './auth.interceptor';
-import { environment } from '../../../environments/environment.development';
-import {afterEach, beforeEach, expect} from 'vitest';
+import { environment } from '../../../environments/environment';
 
 describe('AuthInterceptor', () => {
   let httpTestingController: HttpTestingController;
+  let tokenStoreService: TokenStoreService;
 
-  const token = "test-access-token";
+  const token = 'test-access-token';
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -27,22 +22,18 @@ describe('AuthInterceptor', () => {
     });
 
     httpTestingController = TestBed.inject(HttpTestingController);
+    tokenStoreService = TestBed.inject(TokenStoreService);
   });
 
   afterEach(() => {
     httpTestingController.verify();
-    localStorage.removeItem("access_token");
+    tokenStoreService.clearToken();
   });
 
-
   it('should not add Authorization header when token is absent', () => {
-    localStorage.removeItem('access_token');
-
     const url = `${environment.apiUrl}/api/v1/branches`;
 
-    TestBed.inject(HttpClient)
-      .get(url)
-      .subscribe();
+    TestBed.inject(HttpClient).get(url).subscribe();
 
     const request = httpTestingController.expectOne(url);
 
@@ -52,13 +43,11 @@ describe('AuthInterceptor', () => {
   });
 
   it('should add Bearer token to Authorization header', () => {
-    localStorage.setItem('access_token', token);
+    tokenStoreService.setToken(token);
 
     const url = `${environment.apiUrl}/api/v1/branches`;
 
-    TestBed.inject(HttpClient)
-      .get(url)
-      .subscribe();
+    TestBed.inject(HttpClient).get(url).subscribe();
 
     const request = httpTestingController.expectOne(url);
 
@@ -68,11 +57,7 @@ describe('AuthInterceptor', () => {
   });
 
   it('should enable cookies only for auth endpoints', () => {
-    const http = TestBed.inject(
-      // HttpClient импортируется отдельно
-      // в начале файла
-      HttpClient,
-    );
+    const http = TestBed.inject(HttpClient);
 
     const refreshUrl = `${environment.apiUrl}/api/v1/auth/refresh`;
     const branchesUrl = `${environment.apiUrl}/api/v1/branches`;
@@ -91,7 +76,7 @@ describe('AuthInterceptor', () => {
   });
 
   it('should not add Authorization header to requests to external sites', () => {
-    localStorage.setItem('access_token', token);
+    tokenStoreService.setToken(token);
 
     const url = 'https://example.com/api/data';
 
@@ -104,4 +89,18 @@ describe('AuthInterceptor', () => {
     request.flush({});
   });
 
+  it('should not add Authorization header after token is cleared', () => {
+    tokenStoreService.setToken(token);
+    tokenStoreService.clearToken();
+
+    const url = `${environment.apiUrl}/api/v1/branches`;
+
+    TestBed.inject(HttpClient).get(url).subscribe();
+
+    const request = httpTestingController.expectOne(url);
+
+    expect(request.request.headers.has('Authorization')).toBe(false);
+
+    request.flush({});
+  });
 });
