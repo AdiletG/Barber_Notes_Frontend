@@ -3,7 +3,9 @@ export interface AppError {
   error: string;
   message: string;
   path?: string;
+  retryAfterSeconds?: number;
   fieldErrors: FieldError[];
+  hasValidationErrors?: boolean;
 }
 
 export interface FieldError {

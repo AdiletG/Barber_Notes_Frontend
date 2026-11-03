@@ -3,9 +3,9 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 
-import { TokenStoreService } from '../auth/token-store.service';
-import { authInterceptor } from './auth.interceptor';
-import { environment } from '../../../environments/environment';
+import { TokenStoreService } from '../../auth/token-store.service';
+import { authInterceptor } from '../auth.interceptor';
+import { environment } from '../../../../environments/environment';
 
 describe('AuthInterceptor', () => {
   let httpTestingController: HttpTestingController;
