@@ -36,7 +36,7 @@ export class ToAppErrorMapper {
     const validationErrors = Array.isArray(body.validationErrors) ? body.validationErrors : [];
 
     const appError: AppError = {
-      status: body.status,
+      status: httpError.status,
       error: body.error,
       message: body.message,
       path: typeof body.path === 'string' ? body.path : undefined,

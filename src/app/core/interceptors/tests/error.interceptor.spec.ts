@@ -1,5 +1,3 @@
-import '@angular/compiler';
-
 import {
   HttpClient,
   HttpErrorResponse,
@@ -163,7 +161,7 @@ describe('ErrorInterceptor', () => {
       {
         status: 429,
         error: 'RATE_LIMIT_EXCEEDED',
-        message: 'Слишком много запросов',
+        message: 'Слишком много запросов. Повторите попытку позже.',
       },
       {
         status: 429,
@@ -227,7 +225,21 @@ describe('ErrorInterceptor', () => {
 
     expect(tokenStore.clearToken).toHaveBeenCalledOnce();
 
-    expect(notificationService.error).toHaveBeenCalledWith('Сессия истекла');
+    expect(notificationService.error).toHaveBeenCalledWith('Сессия истекла, войдите снова');
+  });
+
+  it('не должен очищать токен и показывать уведомление при 401 на входе', () => {
+    http.post(`${API_URL}/api/v1/auth/staff-login`, {}).subscribe({ error: () => undefined });
+
+    httpTestingController
+      .expectOne(`${API_URL}/api/v1/auth/staff-login`)
+      .flush(
+        { status: 401, error: 'INVALID_CREDENTIALS', message: 'Неверные учётные данные' },
+        { status: 401, statusText: 'Unauthorized' }
+      );
+
+    expect(tokenStore.clearToken).not.toHaveBeenCalled();
+    expect(notificationService.error).not.toHaveBeenCalled();
   });
 
   it('должен показывать уведомление при отсутствии соединения', () => {
