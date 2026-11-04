@@ -5,7 +5,6 @@ export interface AppError {
   path?: string;
   retryAfterSeconds?: number;
   fieldErrors: FieldError[];
-  hasValidationErrors?: boolean;
 }
 
 export interface FieldError {

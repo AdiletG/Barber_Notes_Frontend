@@ -49,7 +49,6 @@ export class ToAppErrorMapper {
           typeof item.field === 'string' &&
           typeof item.message === 'string'
       ),
-      hasValidationErrors: Array.isArray(body.validationErrors),
     };
 
     if (httpError.status === 429) {
