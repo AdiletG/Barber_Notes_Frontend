@@ -39,7 +39,7 @@ export const errorInterceptor: HttpInterceptorFn = (request, next) => {
 
       if (error.status === 429) {
         notificationService.error(
-          appError.error !== undefined
+          appError.retryAfterSeconds !== undefined
             ? `Слишком много запросов. Повторите попытку через ${appError.retryAfterSeconds} сек.`
             : appError.message
         );

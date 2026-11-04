@@ -177,6 +177,21 @@ describe('ErrorInterceptor', () => {
     );
   });
 
+  it('должен показывать message бэкенда при 429 без Retry-After', () => {
+    http.get(`${API_URL}/api/v1/appointments`).subscribe({ error: () => undefined });
+
+    httpTestingController.expectOne(`${API_URL}/api/v1/appointments`).flush(
+      {
+        status: 429,
+        error: 'OTP_COOLDOWN_ACTIVE',
+        message: 'Повторный код можно запросить позже.',
+      },
+      { status: 429, statusText: 'Too Many Requests' }
+    );
+
+    expect(notificationService.error).toHaveBeenCalledWith('Повторный код можно запросить позже.');
+  });
+
   it('не должен очищать токен и показывать уведомление при 401 на refresh', () => {
     http.post(`${API_URL}/api/v1/auth/refresh`, {}).subscribe({
       error: (error: unknown) => {

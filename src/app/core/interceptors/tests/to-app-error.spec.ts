@@ -1,5 +1,3 @@
-import '@angular/compiler';
-
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { describe, expect, it } from 'vitest';
 
